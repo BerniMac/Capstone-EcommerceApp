@@ -5,8 +5,10 @@
 */
 package factory;
 
-import domain.Inventory;
+import za.ca.cput.commerce.domain.Inventory;
 import org.junit.jupiter.api.Test;
+import za.ca.cput.commerce.factory.InventoryFactory;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InventoryFactoryTest {

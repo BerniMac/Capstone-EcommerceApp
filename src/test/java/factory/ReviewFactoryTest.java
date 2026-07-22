@@ -5,8 +5,10 @@
 */
 package factory;
 
-import domain.Review;
+import za.ca.cput.commerce.domain.Review;
 import org.junit.jupiter.api.Test;
+import za.ca.cput.commerce.factory.ReviewFactory;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReviewFactoryTest {

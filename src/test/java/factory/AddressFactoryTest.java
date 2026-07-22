@@ -5,8 +5,10 @@
 */
 package factory;
 
-import domain.Address;
+import za.ca.cput.commerce.domain.Address;
 import org.junit.jupiter.api.Test;
+import za.ca.cput.commerce.factory.AddressFactory;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AddressFactoryTest {

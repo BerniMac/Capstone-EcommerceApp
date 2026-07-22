@@ -6,8 +6,9 @@
  */
 package factory;
 
-import domain.Product;
+import za.ca.cput.commerce.domain.Product;
 import org.junit.jupiter.api.Test;
+import za.ca.cput.commerce.factory.ProductFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 

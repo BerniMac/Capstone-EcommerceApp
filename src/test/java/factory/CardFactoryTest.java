@@ -5,7 +5,7 @@ Author:isheanesu chowuraya 223182192
 date:26 March 2026
  */
 
-import domain.Card;
+import za.ca.cput.commerce.domain.Card;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

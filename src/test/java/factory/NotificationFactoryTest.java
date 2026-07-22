@@ -5,8 +5,10 @@
 */
 package factory;
 
-import domain.Notification;
+import za.ca.cput.commerce.domain.Notification;
 import org.junit.jupiter.api.Test;
+import za.ca.cput.commerce.factory.NotificationFactory;
+
 import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 

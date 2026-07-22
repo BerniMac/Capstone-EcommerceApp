@@ -5,8 +5,10 @@
 */
 package factory;
 
-import domain.Payment;
+import za.ca.cput.commerce.domain.Payment;
 import org.junit.jupiter.api.Test;
+import za.ca.cput.commerce.factory.PaymentFactory;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PaymentFactoryTest {
