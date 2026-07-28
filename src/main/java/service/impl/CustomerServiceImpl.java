@@ -1,3 +1,7 @@
+/* CustomerServiceImpl.java
+   Author: 222709006 Qhama dyushu
+   Date: 17 July 2026
+*/
 package service.impl;
 
 import domain.Customer;
@@ -39,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> getAll() {
-        return repository.getAll();
+    public List<Customer> findAll() {
+        return repository.findAll();
     }
 }

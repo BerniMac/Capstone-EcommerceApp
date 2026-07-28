@@ -1,7 +1,8 @@
+/* CustomerController.java
+   Author: 222709006 Qhama dyushu
+   Date: 17 July 2026
+*/
 package controller;
-
-import domain.Customer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import service.CustomerService;
 
@@ -40,6 +41,6 @@ public class CustomerController {
 
     @GetMapping("/getall")
     public List<Customer> getAll() {
-        return customerService.getAll();
+        return customerService.findAll();
     }
 }

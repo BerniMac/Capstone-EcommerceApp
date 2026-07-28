@@ -1,30 +1,55 @@
-/* 
-  Customer____.java
-  Author: 222709006 Qhama dyushu
-  Date: 22/03/2026
-    */
+/* CustomerRepositoryTest.java
+   Author: 222709006 Qhama dyushu
+   Date: 17 July 2026
+*/
 package repository.impl;
-
-import domain.Customer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repository.CustomerRepository;
-import repository.impl.CustomerRepositoryImpl;
+import repository.IRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CustomerRepositoryTest {
 
-    CustomerRepository repo = CustomerRepositoryImpl.getRepository();
+    private IRepository<Customer, String> repo;
+
+    @BeforeEach
+    void setUp() {
+        repo = new CustomerRepositoryImpl();
+    }
+
+    private Customer buildCustomer(String id) {
+        return CustomerFactory.createCustomer(id, "John Doe", "john@example.com", "0123456789");
+    }
 
     @Test
-    void create() {
-        Customer customer = new Customer.Builder()
-                .setCustomerId("C001")
-                .setName("Qhama")
-                .build();
+    void testCreate() {
+        assertEquals("CUST-101", repo.create(buildCustomer("CUST-101")).getCustomerId());
+    }
 
-        Customer created = repo.create(customer);
+    @Test
+    void testRead() {
+        repo.create(buildCustomer("CUST-101"));
+        assertEquals("CUST-101", repo.read("CUST-101").getCustomerId());
+    }
 
-        assertNotNull(created);
+    @Test
+    void testUpdate() {
+        repo.create(buildCustomer("CUST-101"));
+        Customer updated = new Customer.Builder().copy(buildCustomer("CUST-101")).setName("Jane Doe").build();
+        assertEquals("Jane Doe", repo.update(updated).getName());
+    }
+
+    @Test
+    void testDelete() {
+        repo.create(buildCustomer("CUST-101"));
+        assertTrue(repo.delete("CUST-101"));
+    }
+
+    @Test
+    void testFindAll() {
+        repo.create(buildCustomer("CUST-101"));
+        repo.create(buildCustomer("CUST-102"));
+        assertEquals(2, repo.findAll().size());
     }
 }

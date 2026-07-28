@@ -1,8 +1,7 @@
-/* 
-  Customer____.java
-  Author: 222709006 Qhama dyushu
-  Date: 22/03/2026
-    */
+/* CustomerRepositoryImpl.java
+   Author: 222709006 Qhama dyushu
+   Date: 17 July 2026
+*/
 package repository.impl;
 
 import domain.Customer;
@@ -15,7 +14,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     private static CustomerRepositoryImpl repository = null;
     private Map<String, Customer> customerDB;
 
-    private CustomerRepositoryImpl() {
+    CustomerRepositoryImpl() {
         customerDB = new HashMap<>();
     }
 
@@ -52,7 +51,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    public List<Customer> getAll() {
+    public List<Customer> findAll() {
         return new ArrayList<>(customerDB.values());
     }
 }
