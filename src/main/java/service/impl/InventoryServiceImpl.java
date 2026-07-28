@@ -1,5 +1,5 @@
 package service.impl;
-
+/*
 import domain.Inventory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public boolean delete(String id) {
+    public void delete(String id) {
         return repository.delete(id);
     }
 
@@ -43,3 +43,5 @@ public class InventoryServiceImpl implements InventoryService {
         return repository.findAll();
     }
 }
+
+ */

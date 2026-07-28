@@ -5,18 +5,20 @@
 */
 package factory;
 
+import domain.Customer;
+import domain.Product;
 import domain.Review;
 
 public class ReviewFactory {
 
-    public static Review createReview(String reviewId, String customerId, String productId, int rating, String comment, String reviewDate) {
-        if (reviewId == null || reviewId.isEmpty() || customerId == null || customerId.isEmpty() || productId == null || productId.isEmpty() || rating < 1 || rating > 5) {
+    public static Review createReview(String reviewId, Customer customer, Product productId, int rating, String comment, String reviewDate) {
+        if (reviewId == null || reviewId.isEmpty() || productId == null || rating < 1 || rating > 5) {
             return null;
         }
 
         return new Review.Builder()
                 .setReviewId(reviewId)
-                .setCustomerId(customerId)
+                .setCustomerId(customer)
                 .setProductId(productId)
                 .setRating(rating)
                 .setComment(comment)

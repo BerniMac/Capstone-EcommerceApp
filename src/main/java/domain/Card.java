@@ -1,21 +1,32 @@
 package domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+//import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+//import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 /*
 card.java
 Autor:isheanesu chowuraya(223182192)
  //date :26 March 2026
  */
 
-@JsonDeserialize(builder = Card.Builder.class)
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+//@JsonDeserialize(builder = Card.Builder.class)
+@Entity
 public class Card {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String cardId;
     private String cardHolderName;
     private String cardType;
     private String cardNumber;
     private String cardExpiry;
     private String cardCVV;
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Payment> payments = new ArrayList<>();
 
     private Card(){}
 
@@ -63,7 +74,7 @@ public class Card {
                 ", cardCVV='" + cardCVV + '\'' +
                 '}';
     }
-    @JsonPOJOBuilder(withPrefix = "set")
+   // @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private String cardId;
         private String cardHolderName;

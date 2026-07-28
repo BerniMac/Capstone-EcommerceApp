@@ -1,5 +1,5 @@
 package service.impl;
-
+/*
 import domain.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public boolean delete(String id) {
+    public void delete(String id) {
         return repository.delete(id);
     }
 
@@ -43,3 +43,5 @@ public class NotificationServiceImpl implements NotificationService {
         return repository.findAll();
     }
 }
+
+ */

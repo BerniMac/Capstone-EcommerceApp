@@ -1,5 +1,5 @@
 package controller;
-
+/*
 import domain.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,3 +43,5 @@ public class CustomerController {
         return customerService.getAll();
     }
 }
+
+ */

@@ -1,45 +1,55 @@
 package controller;
-
+/*
+reviewController.java
+author:isheanesu chowuraya 223182192
+date 19 july 2026
+ */
 import domain.Review;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.ReviewService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/reviews")
 public class ReviewController {
 
-    private final ReviewService reviewService;
 
-    @Autowired
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
+    private final ReviewService service;
+
+    public ReviewController(ReviewService service) {
+        this.service = service;
     }
 
-    @PostMapping("/create")
-    public Review create(@RequestBody Review entity) {
-        return reviewService.create(entity);
+    @PostMapping
+    public ResponseEntity<Review> createReview(@RequestBody Review review) {
+        return new ResponseEntity<>(service.save(review), HttpStatus.CREATED);
     }
 
-    @GetMapping("/read/{id}")
-    public Review read(@PathVariable String id) {
-        return reviewService.read(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Review> getReviewById(@PathVariable String id) {
+        return service.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/update")
-    public Review update(@RequestBody Review entity) {
-        return reviewService.update(entity);
+    @GetMapping
+    public ResponseEntity<List<Review>> getAllReviews() {
+        return ResponseEntity.ok(service.findAll());
     }
 
-    @DeleteMapping("/delete/{id}")
-    public boolean delete(@PathVariable String id) {
-        return reviewService.delete(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<Review> updateReview(@PathVariable String id,
+                                               @RequestBody Review review) {
+        return ResponseEntity.ok(service.update(id, review));
     }
 
-    @GetMapping("/getall")
-    public List<Review> getAll() {
-        return reviewService.findAll();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReview(@PathVariable String id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

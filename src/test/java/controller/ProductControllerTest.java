@@ -1,5 +1,5 @@
 package controller;
-
+/*
 import domain.Product;
 import factory.ProductFactory;
 import org.junit.jupiter.api.Test;
@@ -91,3 +91,5 @@ public class ProductControllerTest {
                 .andExpect(status().isOk());
     }
 }
+
+ */

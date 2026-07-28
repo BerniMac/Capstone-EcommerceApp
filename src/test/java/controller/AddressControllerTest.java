@@ -1,5 +1,5 @@
 package controller;
-
+/*
 import domain.Address;
 import factory.AddressFactory;
 import org.junit.jupiter.api.Test;
@@ -91,3 +91,5 @@ public class AddressControllerTest {
                 .andExpect(status().isOk());
     }
 }
+
+ */

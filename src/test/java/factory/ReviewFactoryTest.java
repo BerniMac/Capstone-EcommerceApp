@@ -5,18 +5,37 @@
 */
 package factory;
 
+import domain.Customer;
+import domain.Product;
 import domain.Review;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReviewFactoryTest {
+    private Customer sampleCustomer() {
+        return new Customer.Builder()
+                .setCustomerId("CUST-001")
+                .setName("John Doe")
+                .setEmail("john@example.com")
+                .setPhone("0821234567")
+                .build();
+    }
+
+    private Product sampleProduct() {
+        return new Product.Builder()
+                .setProductId("PROD-002")
+                .setProductName("Laptop Stand")
+                .setDescription("Adjustable aluminum laptop stand")
+                .setCurrentPrice(45.00)
+                .build();
+    }
 
     @Test
     void testCreateReviewSuccess() {
         Review review = ReviewFactory.createReview(
                 "REV-77",
-                "CUST-001",
-                "PROD-002",
+                sampleCustomer(),          // was: "CUST-001"
+                sampleProduct(),           // was: "PROD-002"
                 5,
                 "Great product, highly recommend!",
                 "2026-06-21"
@@ -24,8 +43,8 @@ class ReviewFactoryTest {
 
         assertNotNull(review);
         assertEquals("REV-77", review.getReviewId());
-        assertEquals("CUST-001", review.getCustomerId());
-        assertEquals("PROD-002", review.getProductId());
+        assertEquals("CUST-001", review.getCustomer().getCustomerId());  // was: review.getCustomerId()
+        assertEquals("PROD-002", review.getProduct().getProductId());   // was: review.getProductId()
         assertEquals(5, review.getRating());
         assertEquals("Great product, highly recommend!", review.getComment());
         assertEquals("2026-06-21", review.getReviewDate());
@@ -35,8 +54,8 @@ class ReviewFactoryTest {
     void testCreateReviewFail() {
         Review review = ReviewFactory.createReview(
                 "REV-77",
-                "CUST-001",
-                "PROD-002",
+                sampleCustomer(),
+                sampleProduct(),
                 6, // invalid rating (max 5)
                 "Great product, highly recommend!",
                 "2026-06-21"
