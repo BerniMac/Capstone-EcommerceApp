@@ -5,22 +5,33 @@
 */
 package domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+//import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+//import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-@JsonDeserialize(builder = Review.Builder.class)
+//@JsonDeserialize(builder = Review.Builder.class)
+
+import jakarta.persistence.*;
+
+@Entity
 public class Review {
-    private final String reviewId;
-    private final String customerId;
-    private final String productId;
-    private final int rating;
-    private final String comment;
-    private final String reviewDate;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private  String reviewId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private  Customer customer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private  Product product;
+    private  int rating;
+    private  String comment;
+    private  String reviewDate;
 
+    private Review(){}
     private Review(Builder builder) {
         this.reviewId = builder.reviewId;
-        this.customerId = builder.customerId;
-        this.productId = builder.productId;
+        this.customer = builder.customer;
+        this.product = builder.product;
         this.rating = builder.rating;
         this.comment = builder.comment;
         this.reviewDate = builder.reviewDate;
@@ -31,12 +42,12 @@ public class Review {
         return reviewId;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public String getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getRating() {
@@ -52,11 +63,11 @@ public class Review {
     }
 
     // Builder Class
-    @JsonPOJOBuilder(withPrefix = "set")
+    //@JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private String reviewId;
-        private String customerId;
-        private String productId;
+        private Customer customer;
+        private Product product;
         private int rating;
         private String comment;
         private String reviewDate;
@@ -66,13 +77,13 @@ public class Review {
             return this;
         }
 
-        public Builder setCustomerId(String customerId) {
-            this.customerId = customerId;
+        public Builder setCustomerId(Customer customer) {
+            this.customer = customer;
             return this;
         }
 
-        public Builder setProductId(String productId) {
-            this.productId = productId;
+        public Builder setProductId(Product product) {
+            this.product = product;
             return this;
         }
 
@@ -93,8 +104,8 @@ public class Review {
 
         public Builder copy(Review review) {
             this.reviewId = review.reviewId;
-            this.customerId = review.customerId;
-            this.productId = review.productId;
+            this.customer = review.customer;
+            this.product = review.product;
             this.rating = review.rating;
             this.comment = review.comment;
             this.reviewDate = review.reviewDate;
@@ -110,8 +121,8 @@ public class Review {
     public String toString() {
         return "Review{" +
                 "reviewId='" + reviewId + '\'' +
-                ", customerId='" + customerId + '\'' +
-                ", productId='" + productId + '\'' +
+                ", customerId='" + customer + '\'' +
+                ", productId='" + product + '\'' +
                 ", rating=" + rating +
                 ", comment='" + comment + '\'' +
                 ", reviewDate='" + reviewDate + '\'' +

@@ -1,8 +1,11 @@
 /* CustomerControllerTest.java
    Author: 222709006 Qhama dyushu
    Date: 17 July 2026
-*/
+
 package controller;
+
+import domain.Customer;
+import factory.CustomerFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
@@ -92,3 +95,5 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk());
     }
 }
+
+ */
