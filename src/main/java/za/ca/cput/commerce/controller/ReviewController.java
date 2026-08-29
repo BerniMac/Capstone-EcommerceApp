@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import za.ca.cput.commerce.domain.Customer;
 import za.ca.cput.commerce.domain.Product;
 import za.ca.cput.commerce.domain.Review;
-import za.ca.cput.commerce.dto.ReviewRequest;
+
 import za.ca.cput.commerce.service.CustomerService;
 import za.ca.cput.commerce.service.ProductService;
 import za.ca.cput.commerce.service.ReviewService;

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.ca.cput.commerce.domain.Invoice;
 import za.ca.cput.commerce.domain.Order;
-import za.ca.cput.commerce.dto.InvoiceRequest;
+
 import za.ca.cput.commerce.service.InvoiceService;
 import za.ca.cput.commerce.service.OrderService;
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import za.ca.cput.commerce.domain.Order;
 import za.ca.cput.commerce.domain.OrderItem;
 import za.ca.cput.commerce.domain.Product;
-import za.ca.cput.commerce.dto.OrderItemRequest;
+
 import za.ca.cput.commerce.service.OrderItemService;
 import za.ca.cput.commerce.service.OrderService;
 import za.ca.cput.commerce.service.ProductService;

@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.ca.cput.commerce.domain.Customer;
 import za.ca.cput.commerce.domain.Notification;
-import za.ca.cput.commerce.dto.NotificationRequest;
 import za.ca.cput.commerce.service.CustomerService;
 import za.ca.cput.commerce.service.NotificationService;
 

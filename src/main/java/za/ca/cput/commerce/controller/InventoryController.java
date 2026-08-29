@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import za.ca.cput.commerce.domain.Inventory;
 import za.ca.cput.commerce.domain.Product;
-import za.ca.cput.commerce.dto.InventoryRequest;
+
 import za.ca.cput.commerce.service.InventoryService;
 import za.ca.cput.commerce.service.ProductService;
 

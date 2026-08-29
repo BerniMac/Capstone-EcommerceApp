@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.ca.cput.commerce.domain.Address;
 import za.ca.cput.commerce.domain.Customer;
-import za.ca.cput.commerce.dto.AddressRequest;
+
 import za.ca.cput.commerce.service.AddressService;
 import za.ca.cput.commerce.service.CustomerService;
 
