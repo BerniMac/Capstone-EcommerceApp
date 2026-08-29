@@ -2,7 +2,7 @@ package za.ca.cput.commerce.service.impl;
 
 /*
 Author: Mogamad Jawaad Allie - 230472125
-19/07/2026
+12/07/2026
  */
 
 import jakarta.persistence.EntityNotFoundException;
@@ -13,48 +13,49 @@ import za.ca.cput.commerce.repository.InvoiceRepository;
 import za.ca.cput.commerce.service.InvoiceService;
 
 import java.util.List;
-
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
-    private final InvoiceRepository invoiceRepository;
+    private final InvoiceRepository repository;
 
-    @Autowired
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository) {
-        this.invoiceRepository = invoiceRepository;
+    public InvoiceServiceImpl(InvoiceRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public Invoice save(Invoice invoice) {
-        return invoiceRepository.save(invoice);
+    public Invoice create(Invoice invoice) {
+        return repository.save(invoice);
     }
 
     @Override
-    public List<Invoice> findAll() {
-        return invoiceRepository.findAll();
+    public Invoice read(String invoiceId) {
+        return repository.findById(invoiceId).orElse(null);
     }
 
     @Override
-    public Invoice findById(String id) {
-        return invoiceRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Invoice"+ id));
+    public Invoice update(Invoice invoice) {
+        if (repository.existsById(invoice.getInvoiceId())) {
+            return repository.save(invoice);
+        }
+        return null;
     }
 
     @Override
-    public Invoice updateStatus(String id, String status) {
-        Invoice existing = findById(id);
-
-        Invoice updated = new Invoice.Builder()
-                .copy(existing)
-                .setInvoiceStatus(status)
-                .build();
-        return invoiceRepository.save(updated);
+    public boolean delete(String invoiceId) {
+        if (repository.existsById(invoiceId)) {
+            repository.deleteById(invoiceId);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void deleteById(String id) {
-        invoiceRepository.delete(findById(id));
+    public List<Invoice> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Invoice getByOrderId(String orderId) {
+        return repository.findByOrderOrderId(orderId).orElse(null);
     }
 }
-
-

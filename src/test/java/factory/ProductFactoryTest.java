@@ -16,10 +16,9 @@ public class ProductFactoryTest {
 
     @Test
     public void testBuildProductSuccess() {
-        Product product = ProductFactory.buildProduct(
+        Product product = ProductFactory.createProduct(
                 "P001",
                 "Laptop",
-                "Gaming Laptop",
                 999.99
         );
 
@@ -33,28 +32,28 @@ public class ProductFactoryTest {
     @Test
     public void testBuildProductNullId() {
         assertThrows(IllegalArgumentException.class, () -> {
-            ProductFactory.buildProduct(null, "Laptop", "Desc", 999.99);
+            ProductFactory.createProduct(null, "Laptop",  999.99);
         });
     }
 
     @Test
     public void testBuildProductEmptyId() {
         assertThrows(IllegalArgumentException.class, () -> {
-            ProductFactory.buildProduct("", "Laptop", "Desc", 999.99);
+            ProductFactory.createProduct("", "Laptop",  999.99);
         });
     }
 
     @Test
     public void testBuildProductNullName() {
         assertThrows(IllegalArgumentException.class, () -> {
-            ProductFactory.buildProduct("P001", null, "Desc", 999.99);
+            ProductFactory.createProduct("P001", null,  999.99);
         });
     }
 
     @Test
     public void testBuildProductNegativePrice() {
         assertThrows(IllegalArgumentException.class, () -> {
-            ProductFactory.buildProduct("P001", "Laptop", "Desc", -100.00);
+            ProductFactory.createProduct("P001", "Laptop",  -100.00);
         });
     }
 }

@@ -2,7 +2,7 @@ package za.ca.cput.commerce.service.impl;
 
 /*
 Author: 222709006 Qhama dyushu
-19/07/2026
+12/07/2026
  */
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,50 +12,70 @@ import za.ca.cput.commerce.repository.CustomerRepository;
 import za.ca.cput.commerce.service.CustomerService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    private final CustomerRepository customerRepository;
+    private final CustomerRepository repository;
 
-    @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    public CustomerServiceImpl(CustomerRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public Customer save(Customer customer) {
-        return customerRepository.save(customer);
+    public Customer create(Customer customer) {
+        return repository.save(customer);
     }
 
     @Override
-    public List<Customer> findAll() {
-        return customerRepository.findAll();
+    public Customer read(String customerId) {
+        return repository.findById(customerId).orElse(null);
     }
 
     @Override
-    public Customer findById(String id) {
-        return customerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Customer"+ id));
-    }
+    public Customer update(String customerId, Customer customer) {
 
-    @Override
-    public Customer update(String id, Customer customer) {
-        Customer existing = findById(id);
+        Customer existingCustomer = read(customerId);
 
-        Customer updated = new Customer.Builder()
-                .copy(existing)
+        if (existingCustomer == null) {
+            return null;
+        }
+
+        Customer updatedCustomer = new Customer.Builder()
+                .copy(existingCustomer)
                 .setName(customer.getName())
                 .setEmail(customer.getEmail())
                 .setPhone(customer.getPhone())
                 .build();
-        return customerRepository.save(updated);
+
+        return repository.save(updatedCustomer);
     }
 
     @Override
-    public void deleteById(String id) {
-        Customer existing = findById(id);
-        customerRepository.delete(existing);
+    public boolean delete(String customerId) {
+
+        if (!repository.existsById(customerId)) {
+            return false;
+        }
+
+        repository.deleteById(customerId);
+        return true;
+    }
+
+    @Override
+    public List<Customer> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Optional<Customer> findByEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
+    @Override
+    public List<Customer> searchByName(String name) {
+        return repository.findByNameContainingIgnoreCase(name);
     }
 }
 

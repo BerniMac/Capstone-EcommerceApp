@@ -6,23 +6,29 @@
  */
 package za.ca.cput.commerce.domain;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
-
+@JsonDeserialize(builder = Shipment.Builder.class)
 @Entity
 public class Shipment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String shipmentId;
     private String address;
-    private Date shipmentDate;
-    private Date deliveryDate;
+    private LocalDateTime shipmentDate;
+    private LocalDateTime deliveryDate;
     private String status;
-
+    @JsonBackReference("shipment-orders")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false, unique = true)
     private Order order;
+
+    protected Shipment(){}
 
     // Private constructor
     private Shipment(Builder builder) {
@@ -31,6 +37,7 @@ public class Shipment {
         this.shipmentDate = builder.shipmentDate;
         this.deliveryDate = builder.deliveryDate;
         this.status = builder.status;
+        this.order = builder.order;
     }
 
     // Getters
@@ -42,11 +49,11 @@ public class Shipment {
         return address;
     }
 
-    public Date getShipmentDate() {
+    public LocalDateTime getShipmentDate() {
         return shipmentDate;
     }
 
-    public Date getDeliveryDate() {
+    public LocalDateTime getDeliveryDate() {
         return deliveryDate;
     }
 
@@ -54,13 +61,18 @@ public class Shipment {
         return status;
     }
 
-    // Builder Class
+    public Order getOrder() {
+        return order;
+    }
+
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private String shipmentId;
         private String address;
-        private Date shipmentDate;
-        private Date deliveryDate;
+        private LocalDateTime shipmentDate;
+        private LocalDateTime deliveryDate;
         private String status;
+        private Order order;
 
         public Builder setShipmentId(String shipmentId) {
             this.shipmentId = shipmentId;
@@ -72,12 +84,12 @@ public class Shipment {
             return this;
         }
 
-        public Builder setShipmentDate(Date shipmentDate) {
+        public Builder setShipmentDate(LocalDateTime shipmentDate) {
             this.shipmentDate = shipmentDate;
             return this;
         }
 
-        public Builder setDeliveryDate(Date deliveryDate) {
+        public Builder setDeliveryDate(LocalDateTime deliveryDate) {
             this.deliveryDate = deliveryDate;
             return this;
         }
@@ -87,12 +99,18 @@ public class Shipment {
             return this;
         }
 
+        public Builder setOrder(Order order) {
+            this.order = order;
+            return this;
+        }
+
         public Builder copy(Shipment shipment) {
             this.shipmentId = shipment.shipmentId;
             this.address = shipment.address;
             this.shipmentDate = shipment.shipmentDate;
             this.deliveryDate = shipment.deliveryDate;
             this.status = shipment.status;
+            this.order = shipment.order;
             return this;
         }
 

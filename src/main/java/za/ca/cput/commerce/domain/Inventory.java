@@ -5,34 +5,58 @@
 */
 package za.ca.cput.commerce.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+//import jakarta.validation.constraints.Min;
+//import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.*;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+
+@JsonDeserialize(builder = Inventory.Builder.class)
 @Entity
 public class Inventory {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private final String inventoryId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String inventoryId;
+
+    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false, unique = true)
-    private final String productId;
-    private final int stockQuantity;
-    private final String warehouseLocation;
-    private final String lastUpdated;
+    private Product product;
+
+    //@Min(0)
+    @Column(nullable = false)
+    private int stockQuantity;
+
+  //  @NotBlank
+    @Column(nullable = false)
+    private String warehouseLocation;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime lastUpdated;
+
+    protected Inventory() {
+    }
 
     private Inventory(Builder builder) {
         this.inventoryId = builder.inventoryId;
-        this.productId = builder.productId;
+        this.product = builder.product;
         this.stockQuantity = builder.stockQuantity;
         this.warehouseLocation = builder.warehouseLocation;
         this.lastUpdated = builder.lastUpdated;
     }
 
-    // Getters
     public String getInventoryId() {
         return inventoryId;
     }
 
-    public String getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getStockQuantity() {
@@ -43,25 +67,26 @@ public class Inventory {
         return warehouseLocation;
     }
 
-    public String getLastUpdated() {
+    public LocalDateTime getLastUpdated() {
         return lastUpdated;
     }
 
-    // Builder Class
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
+
         private String inventoryId;
-        private String productId;
+        private Product product;
         private int stockQuantity;
         private String warehouseLocation;
-        private String lastUpdated;
+        private LocalDateTime lastUpdated;
 
         public Builder setInventoryId(String inventoryId) {
             this.inventoryId = inventoryId;
             return this;
         }
 
-        public Builder setProductId(String productId) {
-            this.productId = productId;
+        public Builder setProduct(Product product) {
+            this.product = product;
             return this;
         }
 
@@ -75,14 +100,14 @@ public class Inventory {
             return this;
         }
 
-        public Builder setLastUpdated(String lastUpdated) {
+        public Builder setLastUpdated(LocalDateTime lastUpdated) {
             this.lastUpdated = lastUpdated;
             return this;
         }
 
         public Builder copy(Inventory inventory) {
             this.inventoryId = inventory.inventoryId;
-            this.productId = inventory.productId;
+            this.product = inventory.product;
             this.stockQuantity = inventory.stockQuantity;
             this.warehouseLocation = inventory.warehouseLocation;
             this.lastUpdated = inventory.lastUpdated;
@@ -98,10 +123,10 @@ public class Inventory {
     public String toString() {
         return "Inventory{" +
                 "inventoryId='" + inventoryId + '\'' +
-                ", productId='" + productId + '\'' +
+                ", product=" + (product != null ? product.getProductId() : null) +
                 ", stockQuantity=" + stockQuantity +
                 ", warehouseLocation='" + warehouseLocation + '\'' +
-                ", lastUpdated='" + lastUpdated + '\'' +
+                ", lastUpdated=" + lastUpdated +
                 '}';
     }
 }

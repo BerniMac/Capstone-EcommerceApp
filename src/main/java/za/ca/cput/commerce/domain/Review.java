@@ -5,28 +5,42 @@
 */
 package za.ca.cput.commerce.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
+
+@JsonDeserialize(builder = Review.Builder.class)
 @Entity
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private final String reviewId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private  String reviewId;
+
+    @JsonBackReference("customer-review")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    private final String customerId;
+    private Customer customer;
+
+    @JsonBackReference("product-review")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    private final String productId;
-    private final int rating;
-    private final String comment;
-    private final String reviewDate;
+    private Product product;
 
+
+    private int rating;
+    private  String comment;
+    private LocalDateTime reviewDate;
+
+    protected Review(){}
 
     private Review(Builder builder) {
         this.reviewId = builder.reviewId;
-        this.customerId = builder.customerId;
-        this.productId = builder.productId;
+        this.customer = builder.customer;
+        this.product = builder.product;
         this.rating = builder.rating;
         this.comment = builder.comment;
         this.reviewDate = builder.reviewDate;
@@ -37,12 +51,12 @@ public class Review {
         return reviewId;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public String getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getRating() {
@@ -53,31 +67,32 @@ public class Review {
         return comment;
     }
 
-    public String getReviewDate() {
+    public LocalDateTime getReviewDate() {
         return reviewDate;
     }
 
-    // Builder Class
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private String reviewId;
-        private String customerId;
-        private String productId;
+        private Customer customer;
+        private Product product;
         private int rating;
         private String comment;
-        private String reviewDate;
+        @CreationTimestamp
+        private LocalDateTime reviewDate;
 
         public Builder setReviewId(String reviewId) {
             this.reviewId = reviewId;
             return this;
         }
 
-        public Builder setCustomerId(String customerId) {
-            this.customerId = customerId;
+        public Builder setCustomer(Customer customer) {
+            this.customer = customer;
             return this;
         }
 
-        public Builder setProductId(String productId) {
-            this.productId = productId;
+        public Builder setProduct(Product product) {
+            this.product = product;
             return this;
         }
 
@@ -91,15 +106,15 @@ public class Review {
             return this;
         }
 
-        public Builder setReviewDate(String reviewDate) {
-            this.reviewDate = reviewDate;
-            return this;
-        }
+//        public Builder setReviewDate(LocalDateTime reviewDate) {
+//            this.reviewDate = reviewDate;
+//            return this;
+//        }
 
         public Builder copy(Review review) {
             this.reviewId = review.reviewId;
-            this.customerId = review.customerId;
-            this.productId = review.productId;
+            this.customer = review.customer;
+            this.product = review.product;
             this.rating = review.rating;
             this.comment = review.comment;
             this.reviewDate = review.reviewDate;
@@ -115,8 +130,8 @@ public class Review {
     public String toString() {
         return "Review{" +
                 "reviewId='" + reviewId + '\'' +
-                ", customerId='" + customerId + '\'' +
-                ", productId='" + productId + '\'' +
+                ", customer=" + (customer != null ? customer.getCustomerId() : null) +
+                ", product=" + (product != null ? product.getProductId() : null) +
                 ", rating=" + rating +
                 ", comment='" + comment + '\'' +
                 ", reviewDate='" + reviewDate + '\'' +

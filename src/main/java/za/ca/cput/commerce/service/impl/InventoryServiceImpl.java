@@ -2,59 +2,106 @@ package za.ca.cput.commerce.service.impl;
 
 /*
 Author: Plamedie 230082629
-19/07/2026
+12/07/2026
  */
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.ca.cput.commerce.domain.Inventory;
+import za.ca.cput.commerce.domain.Product;
 import za.ca.cput.commerce.repository.InventoryRepository;
+import za.ca.cput.commerce.repository.ProductRepository;
 import za.ca.cput.commerce.service.InventoryService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Service
 public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    public InventoryServiceImpl(InventoryRepository inventoryRepository) {
+    public InventoryServiceImpl(InventoryRepository inventoryRepository,
+                                ProductRepository productRepository) {
         this.inventoryRepository = inventoryRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
-    public Inventory save(Inventory inventory) {
-        return inventoryRepository.save(inventory);
+    public Inventory createInventory(Inventory inventory) {
+
+        Product product = productRepository.findById(
+                        inventory.getProduct().getProductId())
+                .orElseThrow(() ->
+                        new RuntimeException("Product not found."));
+
+        if (inventoryRepository.existsByProduct(product)) {
+            throw new RuntimeException(
+                    "Inventory already exists for this product.");
+        }
+
+        Inventory newInventory = new Inventory.Builder()
+                .setProduct(product)
+                .setStockQuantity(inventory.getStockQuantity())
+                .setWarehouseLocation(inventory.getWarehouseLocation())
+                .build();
+
+        return inventoryRepository.save(newInventory);
     }
 
     @Override
-    public List<Inventory> findAll() {
+    public Inventory getInventoryById(String inventoryId) {
+
+        return inventoryRepository.findById(inventoryId)
+                .orElseThrow(() ->
+                        new RuntimeException("Inventory not found."));
+    }
+
+    @Override
+    public List<Inventory> getAllInventory() {
         return inventoryRepository.findAll();
     }
 
     @Override
-    public Inventory findById(String id) {
-        return inventoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Inventory"+id));
+    public Inventory updateInventory(String inventoryId,
+                                     Inventory inventory) {
+
+        Inventory existingInventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() ->
+                        new RuntimeException("Inventory not found."));
+
+        Product product = productRepository.findById(
+                        inventory.getProduct().getProductId())
+                .orElseThrow(() ->
+                        new RuntimeException("Product not found."));
+
+        Inventory updatedInventory =
+                new Inventory.Builder()
+                        .copy(existingInventory)
+                        .setProduct(product)
+                        .setStockQuantity(inventory.getStockQuantity())
+                        .setWarehouseLocation(inventory.getWarehouseLocation())
+                        .build();
+
+        return inventoryRepository.save(updatedInventory);
     }
 
     @Override
-    public Inventory update(String id, Inventory inventory) {
-        Inventory existing = findById(id);
+    public void deleteInventory(String inventoryId) {
 
-        Inventory updated = new Inventory.Builder()
-                .copy(existing)
-                .setStockQuantity(inventory.getStockQuantity())
-                .setWarehouseLocation(inventory.getWarehouseLocation())
-                .setLastUpdated(LocalDateTime.now().toString())
-                .build();
-        return inventoryRepository.save(updated);
+        Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() ->
+                        new RuntimeException("Inventory not found."));
+
+        inventoryRepository.delete(inventory);
     }
 
     @Override
-    public void deleteById(String id) {
-        inventoryRepository.delete(findById(id));
+    public Inventory getInventoryByProductId(String productId) {
+
+        return inventoryRepository
+                .findByProduct_ProductId(productId)
+                .orElseThrow(() ->
+                        new RuntimeException("Inventory not found."));
     }
 }

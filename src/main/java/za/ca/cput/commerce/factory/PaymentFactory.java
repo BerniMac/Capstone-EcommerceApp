@@ -5,25 +5,23 @@
 */
 package za.ca.cput.commerce.factory;
 
+import za.ca.cput.commerce.domain.Card;
+import za.ca.cput.commerce.domain.Order;
 import za.ca.cput.commerce.domain.Payment;
 import java.util.UUID;
 
 public class PaymentFactory {
-    public static Payment createPayment(String orderId, double paymentAmount, String paymentDate, String paymentMethod) {
-        // Basic validation
-        if (orderId == null || orderId.isEmpty() || paymentAmount <= 0) {
-            return null;
-        }
 
-        // Generate a random ID for the payment
-        String paymentId = UUID.randomUUID().toString();
+    public static Payment createPayment(Order order,
+                                        double paymentAmount,
+                                        String paymentMethod,
+                                        Card card) {
 
         return new Payment.Builder()
-                .setPaymentId(paymentId)
-                .setOrderId(orderId)
+                .setOrder(order)
                 .setPaymentAmount(paymentAmount)
-                .setPaymentDate(paymentDate)
                 .setPaymentMethod(paymentMethod)
+                .setCard(card)
                 .build();
     }
 }

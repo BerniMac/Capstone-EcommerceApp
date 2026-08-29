@@ -5,45 +5,64 @@
     */
 package za.ca.cput.commerce.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 @Entity
+@JsonDeserialize(builder = Customer.Builder.class)
 public class Customer {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String customerId;
+
     private String name;
     private String email;
     private String phone;
 
+    @JsonManagedReference("customer-address")
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses = new ArrayList<>();
+    private List<Address> addresses;
 
+    @JsonManagedReference("customer-orders")
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
 
-    private List<Order> orders = new ArrayList<>();
-
+    @JsonManagedReference("customer-notification")
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Notification> notifications = new ArrayList<>();
+    private List<Notification> notifications;
 
-
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("customer-review")
+    @OneToMany(
+            mappedBy = "customer",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Review> reviews = new ArrayList<>();
 
+    protected Customer() {
+    }
 
-    // Private constructor (Builder pattern)
     private Customer(Builder builder) {
         this.customerId = builder.customerId;
         this.name = builder.name;
         this.email = builder.email;
         this.phone = builder.phone;
+
+        this.addresses = new ArrayList<>();
         this.orders = new ArrayList<>();
-        //this.cards = new ArrayList<>();
+        this.notifications = new ArrayList<>();
+        this.reviews = new ArrayList<>();
     }
 
+    //========================
     // Getters
+    //========================
+
     public String getCustomerId() {
         return customerId;
     }
@@ -60,37 +79,58 @@ public class Customer {
         return phone;
     }
 
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
     public List<Order> getOrders() {
         return orders;
     }
 
-    //public List<Card> getCards() {
-    //  return cards;
-    // }
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
 
+    public List<Review> getReviews() {
+        return reviews;
+    }
 
+    //========================
+    // Helper Methods
+    //========================
 
-    // Add Order
+    public void addAddress(Address address) {
+        addresses.add(address);
+    }
+
+    public void removeAddress(Address address) {
+        addresses.remove(address);
+    }
+
     public void addOrder(Order order) {
-        this.orders.add(order);
+        orders.add(order);
     }
 
-    // Remove Order
     public void removeOrder(Order order) {
-        this.orders.remove(order);
+        orders.remove(order);
     }
 
-    // Add Card
-    // public void addCard(Card card) {
-    //  this.cards.add(card);
-    //}
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
 
-    // Remove Card
-    // public void removeCard(Card card) {
-    //  this.cards.remove(card);
-    //}
+    public void removeNotification(Notification notification) {
+        notifications.remove(notification);
+    }
 
-    // Find Order by ID
+    public void addReview(Review review) {
+        reviews.add(review);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
+    }
+
     public Order findOrderById(String orderId) {
         for (Order order : orders) {
             if (order.getOrderId().equals(orderId)) {
@@ -100,17 +140,6 @@ public class Customer {
         return null;
     }
 
-    // Find Card by ID
-//    public Card findCardById(String cardId) {
-//        for (Card card : cards) {
-//            if (card.getCardId().equals(cardId)) {
-//                return card;
-//            }
-//        }
-//        return null;
-//    }
-
-    // toString()
     @Override
     public String toString() {
         return "Customer{" +
@@ -121,8 +150,13 @@ public class Customer {
                 '}';
     }
 
-    //  Builder Pattern
+    //========================
+    // Builder
+    //========================
+
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
+
         private String customerId;
         private String name;
         private String email;

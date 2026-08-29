@@ -9,38 +9,43 @@ import za.ca.cput.commerce.service.AddressService;
 
 import java.util.List;
 
+
 @Service
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
 
-    @Autowired
     public AddressServiceImpl(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
     }
 
     @Override
-    public Address save(Address address) {
+    public Address createAddress(Address address) {
         return addressRepository.save(address);
     }
 
     @Override
-    public List<Address> findAll() {
+    public Address getAddressById(String addressId) {
+        return addressRepository.findById(addressId).orElse(null);
+    }
+
+    @Override
+    public List<Address> getAllAddresses() {
         return addressRepository.findAll();
     }
 
     @Override
-    public Address findById(String id) {
-        return addressRepository.findById(id)
-                .orElseThrow(() ->  new EntityNotFoundException("Address" + id));
-    }
+    public Address updateAddress(String addressId, Address address) {
 
-    @Override
-    public Address update(String id, Address address) {
-        Address existing = findById(id);
+        Address existingAddress = addressRepository.findById(addressId).orElse(null);
 
-        Address updated = new Address.Builder()
-                .copy(existing)
+        if (existingAddress == null) {
+            return null;
+        }
+
+        Address updatedAddress = new Address.Builder()
+                .copy(existingAddress)
+                .setCustomer(address.getCustomer())
                 .setStreetAddress(address.getStreetAddress())
                 .setCity(address.getCity())
                 .setState(address.getState())
@@ -48,11 +53,17 @@ public class AddressServiceImpl implements AddressService {
                 .setCountry(address.getCountry())
                 .setAddressType(address.getAddressType())
                 .build();
-        return addressRepository.save(updated);
+
+        return addressRepository.save(updatedAddress);
     }
 
     @Override
-    public void deleteById(String id) {
-        addressRepository.delete(findById(id));
+    public void deleteAddress(String addressId) {
+        addressRepository.deleteById(addressId);
+    }
+
+    @Override
+    public List<Address> getAddressesByCustomerId(String customerId) {
+        return addressRepository.findByCustomerCustomerId(customerId);
     }
 }

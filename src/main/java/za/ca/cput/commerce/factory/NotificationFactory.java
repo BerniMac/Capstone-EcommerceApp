@@ -5,21 +5,33 @@
 */
 package za.ca.cput.commerce.factory;
 
+import za.ca.cput.commerce.domain.Customer;
 import za.ca.cput.commerce.domain.Notification;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class NotificationFactory {
 
-    public static Notification createNotification(String notificationId, String customerId, String message, Date notificationDate, String status) {
-        if (notificationId == null || notificationId.isEmpty() || customerId == null || customerId.isEmpty() || message == null || message.isEmpty() || notificationDate == null) {
+    public static Notification createNotification(Customer customer,
+                                                  String message,
+                                                  String status) {
+
+        if (customer == null) {
+            return null;
+        }
+
+        if (message == null || message.isBlank()) {
+            return null;
+        }
+
+        if (status == null || status.isBlank()) {
             return null;
         }
 
         return new Notification.Builder()
-                .setNotificationId(notificationId)
-                .setCustomerId(customerId)
+                .setCustomer(customer)
                 .setMessage(message)
-                .setNotificationDate(notificationDate)
                 .setStatus(status)
                 .build();
     }

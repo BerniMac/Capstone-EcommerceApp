@@ -2,7 +2,7 @@ package za.ca.cput.commerce.service.impl;
 
 /*
 Author: Joshua Jonathan Bird - 230444032
-19/07/2026
+12/07/2026
  */
 
 import jakarta.persistence.EntityNotFoundException;
@@ -13,46 +13,53 @@ import za.ca.cput.commerce.repository.OrderRepository;
 import za.ca.cput.commerce.service.OrderService;
 
 import java.util.List;
-
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderRepository orderRepository;
+    private final OrderRepository repository;
 
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    public OrderServiceImpl(OrderRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public Order save(Order order) {
-        return orderRepository.save(order);
+    public Order create(Order order) {
+        return repository.save(order);
     }
 
     @Override
-    public List<Order> findAll() {
-        return orderRepository.findAll();
+    public Order read(String orderId) {
+        return repository.findById(orderId).orElse(null);
     }
 
     @Override
-    public Order findById(String id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Order"+ id));
+    public Order update(Order order) {
+
+        if (repository.existsById(order.getOrderId())) {
+            return repository.save(order);
+        }
+
+        return null;
     }
 
     @Override
-    public Order update(String id, Order order) {
-        Order existing = findById(id);
+    public boolean delete(String orderId) {
 
-        Order updated = new Order.Builder()
-                //.copy(existing)
-                .setTotalAmount(order.getTotalAmount())
-                .build();
-        return orderRepository.save(updated);
+        if (repository.existsById(orderId)) {
+            repository.deleteById(orderId);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    public void deleteById(String id) {
-        orderRepository.delete(findById(id));
+    public List<Order> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public List<Order> getOrdersByCustomer(String customerId) {
+        return repository.findByCustomerCustomerId(customerId);
     }
 }

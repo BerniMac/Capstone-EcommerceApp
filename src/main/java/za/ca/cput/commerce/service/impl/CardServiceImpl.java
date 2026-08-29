@@ -2,7 +2,7 @@ package za.ca.cput.commerce.service.impl;
 
 /*
 Autor:isheanesu chowuraya(223182192)
-19/07/2026
+12/07/2026
  */
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,32 +16,39 @@ import java.util.List;
 @Service
 public class CardServiceImpl implements CardService {
 
-    private final CardRepository cardRepository;
+    private final CardRepository repository;
 
-    @Autowired
-    public CardServiceImpl(CardRepository cardRepository) {
-        this.cardRepository = cardRepository;
-    }
-
-
-    @Override
-    public Card save(Card card) {
-        return cardRepository.save(card);
+    public CardServiceImpl(CardRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public List<Card> findAll() {
-        return cardRepository.findAll();
+    public Card create(Card card) {
+        return repository.save(card);
     }
 
     @Override
-    public Card findById(String id) {
-        return cardRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Card"+ id));
+    public Card read(String cardId) {
+        return repository.findById(cardId).orElse(null);
     }
 
     @Override
-    public void deleteById(String id) {
-        cardRepository.delete(findById(id));
+    public Card update(Card card) {
+
+        if (!repository.existsById(card.getCardId())) {
+            return null;
+        }
+
+        return repository.save(card);
+    }
+
+    @Override
+    public void delete(String cardId) {
+        repository.deleteById(cardId);
+    }
+
+    @Override
+    public List<Card> getAll() {
+        return repository.findAll();
     }
 }

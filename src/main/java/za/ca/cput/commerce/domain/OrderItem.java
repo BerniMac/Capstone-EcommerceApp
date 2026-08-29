@@ -5,28 +5,37 @@
 */
 package za.ca.cput.commerce.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
-
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonDeserialize(builder = OrderItem.Builder.class)
 @Entity
 public class OrderItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private final String orderItemId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private  String orderItemId;
+
+    @JsonBackReference("order-orderItem")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    private final String orderId;
+    private Order order;
+    @JsonBackReference("product-orderItem")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    private final String productId;
-    private final int quantity;
-    private final double priceAtPurchase;
+    private Product product;
 
+    private  int quantity;
+    private  double priceAtPurchase;
+
+    private OrderItem(){}
 
     private OrderItem(Builder builder) {
         this.orderItemId = builder.orderItemId;
-        this.orderId = builder.orderId;
-        this.productId = builder.productId;
+        this.order = builder.order;
+        this.product = builder.product;
         this.quantity = builder.quantity;
         this.priceAtPurchase = builder.priceAtPurchase;
     }
@@ -36,12 +45,12 @@ public class OrderItem {
         return orderItemId;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public String getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getQuantity() {
@@ -52,11 +61,16 @@ public class OrderItem {
         return priceAtPurchase;
     }
 
-    // Builder Class
+    @Transient
+    public double getSubtotal() {
+        return quantity * priceAtPurchase;
+    }
+
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private String orderItemId;
-        private String orderId;
-        private String productId;
+        private Order order;
+        private Product product;
         private int quantity;
         private double priceAtPurchase;
 
@@ -65,13 +79,13 @@ public class OrderItem {
             return this;
         }
 
-        public Builder setOrderId(String orderId) {
-            this.orderId = orderId;
+        public Builder setOrder(Order order) {
+            this.order = order;
             return this;
         }
 
-        public Builder setProductId(String productId) {
-            this.productId = productId;
+        public Builder setProduct(Product product) {
+            this.product = product;
             return this;
         }
 
@@ -87,8 +101,8 @@ public class OrderItem {
 
         public Builder copy(OrderItem orderItem) {
             this.orderItemId = orderItem.orderItemId;
-            this.orderId = orderItem.orderId;
-            this.productId = orderItem.productId;
+            this.order = orderItem.order;
+            this.product = orderItem.product;
             this.quantity = orderItem.quantity;
             this.priceAtPurchase = orderItem.priceAtPurchase;
             return this;
@@ -103,8 +117,8 @@ public class OrderItem {
     public String toString() {
         return "OrderItem{" +
                 "orderItemId='" + orderItemId + '\'' +
-                ", orderId='" + orderId + '\'' +
-                ", productId='" + productId + '\'' +
+                ", order=" + (order != null ? order.getOrderId() : null) +
+                ", product=" + (product != null ? product.getProductId() : null) +
                 ", quantity=" + quantity +
                 ", priceAtPurchase=" + priceAtPurchase +
                 '}';

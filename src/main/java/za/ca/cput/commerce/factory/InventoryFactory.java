@@ -6,20 +6,20 @@
 package za.ca.cput.commerce.factory;
 
 import za.ca.cput.commerce.domain.Inventory;
+import za.ca.cput.commerce.domain.Product;
+import java.time.LocalDateTime;
 
 public class InventoryFactory {
 
-    public static Inventory createInventory(String inventoryId, String productId, int stockQuantity, String warehouseLocation, String lastUpdated) {
-        if (inventoryId == null || inventoryId.isEmpty() || productId == null || productId.isEmpty() || stockQuantity < 0) {
-            return null;
-        }
+    public static Inventory createInventory(Product product,
+                                            int stockQuantity,
+                                            String warehouseLocation) {
 
         return new Inventory.Builder()
-                .setInventoryId(inventoryId)
-                .setProductId(productId)
+                .setProduct(product)
                 .setStockQuantity(stockQuantity)
                 .setWarehouseLocation(warehouseLocation)
-                .setLastUpdated(lastUpdated)
+                .setLastUpdated(LocalDateTime.now())
                 .build();
     }
 }

@@ -5,24 +5,37 @@
 */
 package za.ca.cput.commerce.domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 public class Notification {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private final String notificationId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private  String notificationId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    private final String customerId;
-    private final String message;
-    private final Date notificationDate;
-    private final String status;
+    @JsonBackReference("customer-notification")
+    private Customer customer;
+    @Column(nullable = false)
+    private  String message;
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime notificationDate;
+    @Column(nullable = false)
+    private  String status;
+
+    private Notification(){}
 
     private Notification(Builder builder) {
         this.notificationId = builder.notificationId;
-        this.customerId = builder.customerId;
+        this.customer = builder.customer;
         this.message = builder.message;
         this.notificationDate = builder.notificationDate;
         this.status = builder.status;
@@ -33,15 +46,15 @@ public class Notification {
         return notificationId;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public Date getNotificationDate() {
+    public LocalDateTime getNotificationDate() {
         return notificationDate;
     }
 
@@ -52,9 +65,9 @@ public class Notification {
     // Builder Class
     public static class Builder {
         private String notificationId;
-        private String customerId;
+        private Customer customer;
         private String message;
-        private Date notificationDate;
+        private LocalDateTime notificationDate;
         private String status;
 
         public Builder setNotificationId(String notificationId) {
@@ -62,8 +75,8 @@ public class Notification {
             return this;
         }
 
-        public Builder setCustomerId(String customerId) {
-            this.customerId = customerId;
+        public Builder setCustomer(Customer customer) {
+            this.customer = customer;
             return this;
         }
 
@@ -72,7 +85,7 @@ public class Notification {
             return this;
         }
 
-        public Builder setNotificationDate(Date notificationDate) {
+        public Builder setNotificationDate(LocalDateTime notificationDate) {
             this.notificationDate = notificationDate;
             return this;
         }
@@ -84,7 +97,7 @@ public class Notification {
 
         public Builder copy(Notification notification) {
             this.notificationId = notification.notificationId;
-            this.customerId = notification.customerId;
+            this.customer = notification.customer;
             this.message = notification.message;
             this.notificationDate = notification.notificationDate;
             this.status = notification.status;
@@ -100,11 +113,10 @@ public class Notification {
     public String toString() {
         return "Notification{" +
                 "notificationId='" + notificationId + '\'' +
-                ", customerId='" + customerId + '\'' +
+                ", customer=" + (customer != null ? customer.getCustomerId() : null) +
                 ", message='" + message + '\'' +
                 ", notificationDate=" + notificationDate +
                 ", status='" + status + '\'' +
                 '}';
     }
 }
-

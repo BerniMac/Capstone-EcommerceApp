@@ -5,24 +5,37 @@
 */
 package za.ca.cput.commerce.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
+@JsonDeserialize(builder = Invoice.Builder.class)
 @Entity
 public class Invoice {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private final String invoiceId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private  String invoiceId;
+    @JsonBackReference("invoice-orders")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false, unique = true)
-    private final String orderId;
-    private final String invoiceDate;
-    private final double totalAmount;
-    private final double taxAmount;
-    private final String invoiceStatus;
+    private Order order;
+    @CreationTimestamp
+    private LocalDateTime invoiceDate;
+    @Column(nullable = false)
+    private  double totalAmount;
+    @Column(nullable = false)
+    private  double taxAmount;
+    @Column(nullable = false)
+    private  String invoiceStatus;
+
+    protected Invoice(){}
 
     private Invoice(Builder builder) {
         this.invoiceId = builder.invoiceId;
-        this.orderId = builder.orderId;
+        this.order = builder.order;
         this.invoiceDate = builder.invoiceDate;
         this.totalAmount = builder.totalAmount;
         this.taxAmount = builder.taxAmount;
@@ -34,11 +47,11 @@ public class Invoice {
         return invoiceId;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public String getInvoiceDate() {
+    public LocalDateTime getInvoiceDate() {
         return invoiceDate;
     }
 
@@ -54,11 +67,11 @@ public class Invoice {
         return invoiceStatus;
     }
 
-    // Builder Class
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private String invoiceId;
-        private String orderId;
-        private String invoiceDate;
+        private Order order;
+        private LocalDateTime invoiceDate;
         private double totalAmount;
         private double taxAmount;
         private String invoiceStatus;
@@ -68,12 +81,12 @@ public class Invoice {
             return this;
         }
 
-        public Builder setOrderId(String orderId) {
-            this.orderId = orderId;
+        public Builder setOrder(Order order) {
+            this.order = order;
             return this;
         }
 
-        public Builder setInvoiceDate(String invoiceDate) {
+        public Builder setInvoiceDate(LocalDateTime invoiceDate) {
             this.invoiceDate = invoiceDate;
             return this;
         }
@@ -95,7 +108,7 @@ public class Invoice {
 
         public Builder copy(Invoice invoice) {
             this.invoiceId = invoice.invoiceId;
-            this.orderId = invoice.orderId;
+            this.order = invoice.order;
             this.invoiceDate = invoice.invoiceDate;
             this.totalAmount = invoice.totalAmount;
             this.taxAmount = invoice.taxAmount;
@@ -112,7 +125,7 @@ public class Invoice {
     public String toString() {
         return "Invoice{" +
                 "invoiceId='" + invoiceId + '\'' +
-                ", orderId='" + orderId + '\'' +
+                ", order=" + (order != null ? order.getOrderId() : null) +
                 ", invoiceDate='" + invoiceDate + '\'' +
                 ", totalAmount=" + totalAmount +
                 ", taxAmount=" + taxAmount +

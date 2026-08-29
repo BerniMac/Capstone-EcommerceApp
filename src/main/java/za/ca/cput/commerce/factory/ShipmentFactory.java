@@ -5,37 +5,31 @@
  */
 package za.ca.cput.commerce.factory;
 
+import za.ca.cput.commerce.domain.Order;
 import za.ca.cput.commerce.domain.Shipment;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
 public class ShipmentFactory {
 
-    public static Shipment createShipment(String address,
-                                          Date shipmentDate,
-                                          Date deliveryDate,
-                                          String status) {
+    private ShipmentFactory() {
+    }
 
-        // Validation
-        if (address == null || address.isEmpty())
-            return null;
-
-        if (shipmentDate == null || deliveryDate == null)
-            return null;
-
-        if (status == null || status.isEmpty())
-            return null;
-
-        // Generate ID
-        String shipmentId = UUID.randomUUID().toString();
+    public static Shipment createShipment(
+            String address,
+            LocalDate shipmentDate,
+            LocalDate deliveryDate,
+            String status,
+            Order order) {
 
         return new Shipment.Builder()
-                .setShipmentId(shipmentId)
                 .setAddress(address)
-                .setShipmentDate(shipmentDate)
-                .setDeliveryDate(deliveryDate)
+                .setShipmentDate(LocalDate.now().atStartOfDay())
+                .setDeliveryDate(LocalDate.now().atStartOfDay())
                 .setStatus(status)
+                .setOrder(order)
                 .build();
     }
 }

@@ -5,22 +5,39 @@
 */
 package za.ca.cput.commerce.factory;
 
+import za.ca.cput.commerce.domain.Customer;
+import za.ca.cput.commerce.domain.Product;
 import za.ca.cput.commerce.domain.Review;
+
 
 public class ReviewFactory {
 
-    public static Review createReview(String reviewId, String customerId, String productId, int rating, String comment, String reviewDate) {
-        if (reviewId == null || reviewId.isEmpty() || customerId == null || customerId.isEmpty() || productId == null || productId.isEmpty() || rating < 1 || rating > 5) {
+    public static Review createReview(Customer customer,
+                                      Product product,
+                                      int rating,
+                                      String comment) {
+
+        if (customer == null) {
+            return null;
+        }
+
+        if (product == null) {
+            return null;
+        }
+
+        if (rating < 1 || rating > 5) {
+            return null;
+        }
+
+        if (comment == null || comment.trim().isEmpty()) {
             return null;
         }
 
         return new Review.Builder()
-                .setReviewId(reviewId)
-                .setCustomerId(customerId)
-                .setProductId(productId)
+                .setCustomer(customer)
+                .setProduct(product)
                 .setRating(rating)
-                .setComment(comment)
-                .setReviewDate(reviewDate)
+                .setComment(comment.trim())
                 .build();
     }
 }

@@ -2,16 +2,24 @@ package za.ca.cput.commerce.service;
 
 /*
 Author: Tlangelani Chauke
-19/07/2026
+12/07/2026
  */
 import za.ca.cput.commerce.domain.Shipment;
 
 import java.util.List;
 
 public interface ShipmentService {
-    Shipment save(Shipment shipment);
-    List<Shipment> findAll();
-    Shipment findById(String id);
-    Shipment updateStatus(String id, String status);
-    void deleteById(String id);
+
+    Shipment create(Shipment shipment);
+
+    Shipment read(String shipmentId);
+
+    Shipment update(Shipment shipment);
+
+    void delete(String shipmentId);
+
+    List<Shipment> getAll();
+
+    Shipment findByOrderId(String orderId);
+
 }

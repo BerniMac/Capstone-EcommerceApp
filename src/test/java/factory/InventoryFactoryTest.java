@@ -7,25 +7,34 @@ package factory;
 
 import za.ca.cput.commerce.domain.Inventory;
 import org.junit.jupiter.api.Test;
+import za.ca.cput.commerce.domain.Product;
 import za.ca.cput.commerce.factory.InventoryFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class InventoryFactoryTest {
+
+    private Product sampleProduct() {
+        return new Product.Builder()
+                .setProductId("PROD-001")
+                .setProductName("Wireless Mouse")
+                .setDescription("Ergonomic wireless mouse")
+                .setCurrentPrice(29.99)
+                .build();
+    }
 
     @Test
     void testCreateInventorySuccess() {
         Inventory inventory = InventoryFactory.createInventory(
-                "INV-505",
-                "PROD-001",
+                sampleProduct(),           // was: "PROD-001"
                 100,
-                "Warehouse A",
                 "2026-06-21"
         );
 
         assertNotNull(inventory);
         assertEquals("INV-505", inventory.getInventoryId());
-        assertEquals("PROD-001", inventory.getProductId());
+        assertEquals("PROD-001", inventory.getProduct().getProductId());  // was: inventory.getProductId()
         assertEquals(100, inventory.getStockQuantity());
         assertEquals("Warehouse A", inventory.getWarehouseLocation());
         assertEquals("2026-06-21", inventory.getLastUpdated());
@@ -34,10 +43,8 @@ class InventoryFactoryTest {
     @Test
     void testCreateInventoryFail() {
         Inventory inventory = InventoryFactory.createInventory(
-                "INV-505",
-                "PROD-001",
+                sampleProduct(),
                 -5, // invalid stock
-                "Warehouse A",
                 "2026-06-21"
         );
         assertNull(inventory);

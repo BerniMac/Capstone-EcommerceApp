@@ -7,17 +7,26 @@ package factory;
 
 import za.ca.cput.commerce.domain.Address;
 import org.junit.jupiter.api.Test;
+import za.ca.cput.commerce.domain.Customer;
 import za.ca.cput.commerce.factory.AddressFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AddressFactoryTest {
 
+    private Customer sampleCustomer() {
+        return new Customer.Builder()
+                .setCustomerId("CUST-202")
+                .setName("John Doe")
+                .setEmail("john@example.com")
+                .setPhone("0821234567")
+                .build();
+    }
+
     @Test
     void testCreateAddressSuccess() {
         Address address = AddressFactory.createAddress(
-                "ADDR-101",
-                "CUST-202",
+                sampleCustomer(),          // was: "CUST-202"
                 "123 Main St",
                 "Cape Town",
                 "Western Cape",
@@ -28,7 +37,7 @@ class AddressFactoryTest {
 
         assertNotNull(address);
         assertEquals("ADDR-101", address.getAddressId());
-        assertEquals("CUST-202", address.getCustomerId());
+        assertEquals("CUST-202", address.getCustomer().getCustomerId());   // was: address.getCustomerId()
         assertEquals("123 Main St", address.getStreetAddress());
         assertEquals("Cape Town", address.getCity());
         assertEquals("Western Cape", address.getState());
@@ -40,8 +49,7 @@ class AddressFactoryTest {
     @Test
     void testCreateAddressFail() {
         Address address = AddressFactory.createAddress(
-                "",
-                "CUST-202",
+                sampleCustomer(),
                 "123 Main St",
                 "Cape Town",
                 "Western Cape",

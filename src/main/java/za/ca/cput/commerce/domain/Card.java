@@ -1,4 +1,7 @@
 package za.ca.cput.commerce.domain;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -9,6 +12,7 @@ card.java
 Autor:isheanesu chowuraya(223182192)
  //date :26 March 2026
  */
+@JsonDeserialize(builder = Card.Builder.class)
 @Entity
 public class Card {
     @Id
@@ -21,9 +25,10 @@ public class Card {
     private String cardCVV;
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("card-payment")
     private List<Payment> payments = new ArrayList<>();
 
-    private Card(){}
+    protected Card(){}
 
     private Card(Builder builder){
         this.cardId = builder.cardId;
@@ -58,6 +63,13 @@ public class Card {
         return cardCVV;
     }
 
+    public List<Payment> getPayments() {
+        return payments;
+    }
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
+    }
+
     @Override
     public String toString() {
         return "Card{" +
@@ -69,6 +81,7 @@ public class Card {
                 ", cardCVV='" + cardCVV + '\'' +
                 '}';
     }
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private String cardId;
         private String cardHolderName;
@@ -101,6 +114,8 @@ public class Card {
             this.cardCVV = cardCVV;
             return this;
         }
+
+
         public Builder copy(Card card) {
             this.cardId = card.cardId;
             this.cardHolderName = card.cardHolderName;

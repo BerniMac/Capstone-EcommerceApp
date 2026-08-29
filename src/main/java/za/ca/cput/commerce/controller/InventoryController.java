@@ -3,11 +3,14 @@ package za.ca.cput.commerce.controller;
 /*
 Author: Plamedie 230082629
 19/07/2026
- */
+*/
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import za.ca.cput.commerce.domain.Inventory;
+import za.ca.cput.commerce.domain.Product;
+import za.ca.cput.commerce.dto.InventoryRequest;
 import za.ca.cput.commerce.service.InventoryService;
+import za.ca.cput.commerce.service.ProductService;
 
 import java.util.List;
 
@@ -21,30 +24,37 @@ public class InventoryController {
         this.inventoryService = inventoryService;
     }
 
-    @GetMapping
-    public List<Inventory> getAllInventory() {
-        return inventoryService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public Inventory getInventoryById(@PathVariable String id) {
-        return inventoryService.findById(id);
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Inventory createInventory(@RequestBody Inventory inventory) {
-        return inventoryService.save(inventory);
+        return inventoryService.createInventory(inventory);
     }
 
-    @PutMapping("/{id}")
-    public Inventory updateInventory(@PathVariable String id, @RequestBody Inventory inventory) {
-        return inventoryService.update(id, inventory);
+    @GetMapping("/{inventoryId}")
+    public Inventory getInventoryById(@PathVariable String inventoryId) {
+        return inventoryService.getInventoryById(inventoryId);
     }
 
-    @DeleteMapping("/{id}")
+    @GetMapping
+    public List<Inventory> getAllInventory() {
+        return inventoryService.getAllInventory();
+    }
+
+    @PutMapping("/{inventoryId}")
+    public Inventory updateInventory(@PathVariable String inventoryId,
+                                     @RequestBody Inventory inventory) {
+        return inventoryService.updateInventory(inventoryId, inventory);
+    }
+
+    @DeleteMapping("/{inventoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteInventory(@PathVariable String id) {
-        inventoryService.deleteById(id);
+    public void deleteInventory(@PathVariable String inventoryId) {
+        inventoryService.deleteInventory(inventoryId);
+    }
+
+    @GetMapping("/product/{productId}")
+    public Inventory getInventoryByProduct(@PathVariable String productId) {
+        return inventoryService.getInventoryByProductId(productId);
     }
 }
+

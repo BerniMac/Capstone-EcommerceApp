@@ -5,19 +5,36 @@
 */
 package za.ca.cput.commerce.factory;
 
+import za.ca.cput.commerce.domain.Order;
 import za.ca.cput.commerce.domain.OrderItem;
+import za.ca.cput.commerce.domain.Product;
 
 public class OrderItemFactory {
 
-    public static OrderItem createOrderItem(String orderItemId, String orderId, String productId, int quantity, double priceAtPurchase) {
-        if (orderItemId == null || orderItemId.isEmpty() || orderId == null || orderId.isEmpty() || productId == null || productId.isEmpty() || quantity <= 0) {
+    public static OrderItem createOrderItem(Order order,
+                                            Product product,
+                                            int quantity,
+                                            double priceAtPurchase) {
+
+        if (order == null) {
+            return null;
+        }
+
+        if (product == null) {
+            return null;
+        }
+
+        if (quantity <= 0) {
+            return null;
+        }
+
+        if (priceAtPurchase < 0) {
             return null;
         }
 
         return new OrderItem.Builder()
-                .setOrderItemId(orderItemId)
-                .setOrderId(orderId)
-                .setProductId(productId)
+                .setOrder(order)
+                .setProduct(product)
                 .setQuantity(quantity)
                 .setPriceAtPurchase(priceAtPurchase)
                 .build();

@@ -2,7 +2,7 @@ package za.ca.cput.commerce.repository;
 
 /*
 Autor:isheanesu chowuraya(223182192)
-19/07/2026
+
  */
 
 import org.springframework.data.jpa.repository.JpaRepository;

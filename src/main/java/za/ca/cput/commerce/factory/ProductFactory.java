@@ -7,24 +7,28 @@
 package za.ca.cput.commerce.factory;
 
 import za.ca.cput.commerce.domain.Product;
-
 public class ProductFactory {
 
-    public static Product buildProduct(String productId, String productName,
-                                       String description, double currentPrice) {
-        // Validation
-        if (productId == null || productId.isEmpty()) {
-            throw new IllegalArgumentException("Product ID cannot be null or empty");
+    private ProductFactory() {
+    }
+
+    public static Product createProduct(String productName,
+                                        String description,
+                                        double currentPrice) {
+
+        if (productName == null || productName.isBlank()) {
+            throw new IllegalArgumentException("Product name is required.");
         }
-        if (productName == null || productName.isEmpty()) {
-            throw new IllegalArgumentException("Product Name cannot be null or empty");
+
+        if (description == null || description.isBlank()) {
+            throw new IllegalArgumentException("Description is required.");
         }
-        if (currentPrice < 0) {
-            throw new IllegalArgumentException("Price cannot be negative");
+
+        if (currentPrice <= 0) {
+            throw new IllegalArgumentException("Price must be greater than zero.");
         }
 
         return new Product.Builder()
-                .setProductId(productId)
                 .setProductName(productName)
                 .setDescription(description)
                 .setCurrentPrice(currentPrice)

@@ -6,18 +6,31 @@
 package za.ca.cput.commerce.factory;
 
 import za.ca.cput.commerce.domain.Invoice;
+import za.ca.cput.commerce.domain.Order;
+
+import java.time.LocalDateTime;
 
 public class InvoiceFactory {
 
-    public static Invoice createInvoice(String invoiceId, String orderId, String invoiceDate, double totalAmount, double taxAmount, String invoiceStatus) {
-        if (invoiceId == null || invoiceId.isEmpty() || orderId == null || orderId.isEmpty() || totalAmount < 0) {
+    public static Invoice createInvoice(Order order,
+                                        double totalAmount,
+                                        double taxAmount,
+                                        String invoiceStatus) {
+
+        if (order == null) {
+            return null;
+        }
+
+        if (totalAmount < 0 || taxAmount < 0) {
+            return null;
+        }
+
+        if (invoiceStatus == null || invoiceStatus.isBlank()) {
             return null;
         }
 
         return new Invoice.Builder()
-                .setInvoiceId(invoiceId)
-                .setOrderId(orderId)
-                .setInvoiceDate(invoiceDate)
+                .setOrder(order)
                 .setTotalAmount(totalAmount)
                 .setTaxAmount(taxAmount)
                 .setInvoiceStatus(invoiceStatus)

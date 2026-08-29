@@ -5,26 +5,36 @@
 */
 package za.ca.cput.commerce.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
 
+@JsonDeserialize(builder = Address.Builder.class)
 @Entity
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private final String addressId;
+    private  String addressId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private final String customerId;
-    private final String streetAddress;
-    private final String city;
-    private final String state;
-    private final String postalCode;
-    private final String country;
-    private final String addressType;
+    @JoinColumn(name = "customer_id")
+    @JsonBackReference("customer-address")
+    private  Customer customer;
+
+    private  String streetAddress;
+    private  String city;
+    private  String state;
+    private  String postalCode;
+    private  String country;
+    private  String addressType;
+
+    protected Address() {
+    }
 
     private Address(Builder builder) {
         this.addressId = builder.addressId;
-        this.customerId = builder.customerId;
+        this.customer = builder.customer;
         this.streetAddress = builder.streetAddress;
         this.city = builder.city;
         this.state = builder.state;
@@ -38,8 +48,8 @@ public class Address {
         return addressId;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public String getStreetAddress() {
@@ -66,10 +76,10 @@ public class Address {
         return addressType;
     }
 
-    // Builder Class
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private String addressId;
-        private String customerId;
+        private Customer customer;
         private String streetAddress;
         private String city;
         private String state;
@@ -82,8 +92,8 @@ public class Address {
             return this;
         }
 
-        public Builder setCustomerId(String customerId) {
-            this.customerId = customerId;
+        public Builder setCustomer(Customer customer) {
+            this.customer = customer;
             return this;
         }
 
@@ -119,7 +129,7 @@ public class Address {
 
         public Builder copy(Address address) {
             this.addressId = address.addressId;
-            this.customerId = address.customerId;
+            this.customer = address.customer;
             this.streetAddress = address.streetAddress;
             this.city = address.city;
             this.state = address.state;
@@ -138,7 +148,7 @@ public class Address {
     public String toString() {
         return "Address{" +
                 "addressId='" + addressId + '\'' +
-                ", customerId='" + customerId + '\'' +
+                ", customer=" + (customer != null ? customer.getCustomerId() : null) +
                 ", streetAddress='" + streetAddress + '\'' +
                 ", city='" + city + '\'' +
                 ", state='" + state + '\'' +

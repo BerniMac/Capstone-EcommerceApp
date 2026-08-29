@@ -5,37 +5,66 @@
     */
 package za.ca.cput.commerce.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+@JsonIgnoreProperties({
+        "hibernateLazyInitializer",
+        "handler"
+})
+@JsonDeserialize(builder = Order.Builder.class)
 @Entity
+@Table(name = "orders")
 public class Order {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private final String orderId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String orderId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    private final String customerId;
-    private final String orderDate;
-    private final double totalAmount;
+    @JsonBackReference("customer-order")
+    private Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private LocalDateTime orderDate;
+    private double totalAmount;
+
+    @JsonManagedReference("order-orderItems")
+    @OneToMany(mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("payment-order")
+    @OneToOne(mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Payment payment;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("order-invoice")
+    @OneToOne(mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Invoice invoice;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("order-shipment")
+    @OneToOne(mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Shipment shipment;
+
+    protected Order(){}
 
     private Order (Builder builder) {
         this.orderId = builder.orderId;
-        this.customerId = builder.customerId;
+        this.customer = builder.customer;
         this.orderDate = builder.orderDate;
         this.totalAmount = builder.totalAmount;
     }
@@ -45,20 +74,37 @@ public class Order {
         return orderId;
 
     }
-    public String getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
-    public String getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
     public double getTotalAmount() {
         return totalAmount;
     }
 
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public Shipment getShipment() {
+        return shipment;
+    }
+
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private  String orderId;
-        private  String customerId;
-        private  String orderDate;
+        private  Customer customer;
+        private  LocalDateTime orderDate;
         private  double totalAmount;
 
         //Setters
@@ -66,16 +112,24 @@ public class Order {
             this.orderId = orderId;
             return this;
         }
-        public Builder setCustomerId(String customerId) {
-            this.customerId = customerId;
+        public Builder setCustomer(Customer customer) {
+            this.customer = customer;
             return this;
         }
-        public Builder setOrderDate(String orderDate) {
+        public Builder setOrderDate(LocalDateTime orderDate) {
             this.orderDate = orderDate;
             return this;
         }
         public Builder setTotalAmount(double totalAmount) {
             this.totalAmount = totalAmount;
+            return this;
+        }
+
+        public Builder copy(Order order) {
+            this.orderId = order.orderId;
+            this.customer = order.customer;
+            this.orderDate = order.orderDate;
+            this.totalAmount = order.totalAmount;
             return this;
         }
 

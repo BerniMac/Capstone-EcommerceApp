@@ -2,7 +2,7 @@ package za.ca.cput.commerce.service.impl;
 
 /*
 Author: isheanesu chowuraya (223182192)
-19/07/2026
+12/07/2026
  */
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,47 +12,60 @@ import za.ca.cput.commerce.repository.ReviewRepository;
 import za.ca.cput.commerce.service.ReviewService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
-    private final ReviewRepository reviewRepository;
+    private final ReviewRepository repository;
 
-    @Autowired
-    public ReviewServiceImpl(ReviewRepository reviewRepository) {
-        this.reviewRepository = reviewRepository;
+    public ReviewServiceImpl(ReviewRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public Review save(Review review) {
-        return reviewRepository.save(review);
+    public Review create(Review review) {
+        return repository.save(review);
     }
 
     @Override
-    public List<Review> findAll() {
-        return reviewRepository.findAll();
+    public Optional<Review> read(String reviewId) {
+        return repository.findById(reviewId);
     }
 
     @Override
-    public Review findById(String id) {
-        return reviewRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Review"+ id));
+    public Review update(Review review) {
+
+        if (repository.existsById(review.getReviewId())) {
+            return repository.save(review);
+        }
+
+        return null;
     }
 
     @Override
-    public Review update(String id, Review review) {
-        Review existing = findById(id);
+    public boolean delete(String reviewId) {
 
-        Review updated = new Review.Builder()
-                .copy(existing)
-                .setRating(review.getRating())
-                .setComment(review.getComment())
-                .build();
-        return reviewRepository.save(updated);
+        if (repository.existsById(reviewId)) {
+            repository.deleteById(reviewId);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    public void deleteById(String id) {
-        reviewRepository.delete(findById(id));
+    public List<Review> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public List<Review> getReviewsByProduct(String productId) {
+        return repository.findByProductProductId(productId);
+    }
+
+    @Override
+    public List<Review> getReviewsByCustomer(String customerId) {
+        return repository.findByCustomerCustomerId(customerId);
     }
 }

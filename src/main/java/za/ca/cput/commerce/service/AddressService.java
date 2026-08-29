@@ -5,9 +5,16 @@ import za.ca.cput.commerce.domain.Address;
 import java.util.List;
 
 public interface AddressService {
-    Address save(Address address);
-    List<Address> findAll();
-    Address findById(String id);
-    Address update(String id, Address address);
-    void deleteById(String id);
+
+    Address createAddress(Address address);
+
+    Address getAddressById(String addressId);
+
+    List<Address> getAllAddresses();
+
+    Address updateAddress(String addressId, Address address);
+
+    void deleteAddress(String addressId);
+
+    List<Address> getAddressesByCustomerId(String customerId);
 }

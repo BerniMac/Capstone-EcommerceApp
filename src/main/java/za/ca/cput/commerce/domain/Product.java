@@ -6,25 +6,41 @@
  */
 package za.ca.cput.commerce.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonDeserialize(builder = Product.Builder.class)
 @Entity
 public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private final String productId;
-    private final String productName;
-    private final String description;
-    private final double currentPrice;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String productId;
+
+    private String productName;
+
+    private String description;
+
+    private double currentPrice;
+
+    @JsonManagedReference
+    @OneToOne(mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Inventory inventory;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+
+    @JsonManagedReference("product-review")
+    @OneToMany(mappedBy = "product")
+    private List<Review> reviews;
+
+    protected Product() {
+    }
 
     private Product(Builder builder) {
         this.productId = builder.productId;
@@ -33,14 +49,40 @@ public class Product {
         this.currentPrice = builder.currentPrice;
     }
 
+    //==========================
     // Getters
-    public String getProductId() { return productId; }
-    public String getProductName() { return productName; }
-    public String getDescription() { return description; }
-    public double getCurrentPrice() { return currentPrice; }
+    //==========================
 
-    // Builder Class
+    public String getProductId() {
+        return productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    //==========================
+    // Builder
+    //==========================
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
+
         private String productId;
         private String productName;
         private String description;
@@ -65,13 +107,17 @@ public class Product {
             this.currentPrice = currentPrice;
             return this;
         }
+
         public Builder copy(Product product) {
-            this.productId = product.productId;
-            this.productName = product.productName;
-            this.description = product.description;
-            this.currentPrice = product.currentPrice;
+
+            this.productId = product.getProductId();
+            this.productName = product.getProductName();
+            this.description = product.getDescription();
+            this.currentPrice = product.getCurrentPrice();
+
             return this;
         }
+
         public Product build() {
             return new Product(this);
         }

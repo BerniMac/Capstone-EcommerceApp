@@ -6,17 +6,23 @@
 package za.ca.cput.commerce.factory;
 
 import za.ca.cput.commerce.domain.Address;
+import za.ca.cput.commerce.domain.Customer;
 
 public class AddressFactory {
 
-    public static Address createAddress(String addressId, String customerId, String streetAddress, String city, String state, String postalCode, String country, String addressType) {
-        if (addressId == null || addressId.isEmpty() || customerId == null || customerId.isEmpty()) {
-            return null;
-        }
+    private AddressFactory() {
+    }
+
+    public static Address createAddress(Customer customer,
+                                        String streetAddress,
+                                        String city,
+                                        String state,
+                                        String postalCode,
+                                        String country,
+                                        String addressType) {
 
         return new Address.Builder()
-                .setAddressId(addressId)
-                .setCustomerId(customerId)
+                .setCustomer(customer)
                 .setStreetAddress(streetAddress)
                 .setCity(city)
                 .setState(state)

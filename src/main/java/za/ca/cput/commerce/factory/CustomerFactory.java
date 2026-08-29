@@ -9,14 +9,21 @@ import za.ca.cput.commerce.domain.Customer;
 
 public class CustomerFactory {
 
-    public static Customer createCustomer(String id, String name, String email, String phone) {
+    public static Customer createCustomer(String name, String email, String phone) {
 
-        if (id == null || name == null) {
+        if (name == null || name.isBlank()) {
+            return null;
+        }
+
+        if (email == null || email.isBlank()) {
+            return null;
+        }
+
+        if (phone == null || phone.isBlank()) {
             return null;
         }
 
         return new Customer.Builder()
-                .setCustomerId(id)
                 .setName(name)
                 .setEmail(email)
                 .setPhone(phone)
